@@ -1,0 +1,11 @@
+# Placeholder pour le fichier de synthèse Agribalyse 3.2
+# Le vrai fichier (1-2 MB) doit être téléchargé depuis :
+# https://data.ademe.fr/datasets/agribalyse-3-2-synthese
+#
+# Format CSV (délimiteur ;):
+# Code_AGB;Groupe_produit;Nom_produit;Mode_production;Score_unique;
+# cch_kgCO2eq;pma_disease;wtu_m3world;ldu_Pt;mru_kgSbeq;fru_MJ;
+# acd_molH+;tre_molN;fwe_kgP;swe_kgN;etf_CTUe;htc_CTUh;htn_CTUh;
+# pco_kgNMVOC;ior_kBqU235;ozd_kgCFC11
+#
+# En attendant, les données embarquées dans core/agribalyse.py sont utilisées.

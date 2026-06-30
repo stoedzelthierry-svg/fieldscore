@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 50" fill="none">
+  <path d="M20 35 Q10 20 25 10 Q35 5 40 15 L50 40" stroke="#DC3B41" stroke-width="3" fill="none"/>
+  <path d="M30 32 L45 10" stroke="#DC3B41" stroke-width="2.5" fill="none"/>
+  <circle cx="25" cy="12" r="3" fill="#DC3B41"/>
+  <text x="55" y="35" font-family="Montserrat, sans-serif" font-weight="800" font-size="22" fill="#1F2937">
+    ECO<tspan fill="#DC3B41">CERT</tspan>
+  </text>
+</svg>

@@ -1,0 +1,25 @@
+code_culture_pac,nom_culture,code_agb,nom_produit_agb,rendement_moyen_conv_kg_ha,rendement_moyen_bio_kg_ha
+BLE_TENDRE,Blé tendre,20010,Blé tendre grain conventionnel,7500,4500
+MAIS_GRAIN,Maïs grain,20050,Maïs grain conventionnel,9500,6500
+ORGE,Orge,20020,Orge grain conventionnel,6800,4000
+COLZA,Colza,20110,Colza grain conventionnel,3500,2200
+TOURNESOL,Tournesol,20120,Tournesol grain conventionnel,2500,1800
+POIS,Protéagineux,20210,Pois protéagineux conventionnel,4500,3500
+FEVE,Protéagineux,20230,Féverole conventionnel,4000,3000
+POMME_DE_TERRE,Pomme de terre,44000,Pomme de terre conventionnelle,45000,25000
+BETTERAVE,Betterave sucrière,26000,Betterave sucrière conventionnelle,85000,55000
+PRAIRIE_PERMANENTE,Prairie permanente,99999,Prairie permanente,6500,6500
+PRAIRIE_TEMPORAIRE,Prairie temporaire,99998,Prairie temporaire,8000,8000
+MAIS_ENSILAGE,Maïs ensilage,21010,Maïs ensilage conventionnel,45000,35000
+VIGNE_CUVE,Vigne cuve,53000,Raisin cuve conventionnel,8500,5500
+VERGER,Verger,51000,Fruits conventionnel,18000,12000
+BLE_DUR,Ble dur,20015,Blé dur grain conventionnel,5000,3200
+TRITICALE,Triticale,20030,Triticale grain conventionnel,5800,3800
+AVOINE,Avoine,20025,Avoine grain conventionnel,4500,3000
+SEIGLE,Seigle,20035,Seigle grain conventionnel,5000,3500
+SORGHO,Sorgho,20055,Sorgho grain conventionnel,6500,4500
+RIZ,Riz,20060,Riz conventionnel,5500,4000
+SOJA,Soja,20220,Soja grain conventionnel,3000,2200
+LENTILLE,Lentille,20250,Lentille conventionnelle,1500,1200
+POIS_CHICHE,Pois chiche,20240,Pois chiche conventionnel,1800,1400
+LUZERNE,Luzerne,20310,Luzerne déshydratée conventionnelle,12000,10000

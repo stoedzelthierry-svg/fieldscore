@@ -1,0 +1,40 @@
+code_culture_pac,nom_culture,code_agb,nom_produit_agb,rendement_moyen_conv_kg_ha,rendement_moyen_bio_kg_ha,source_rendement
+BLE,BLE tendre,AGB-001,Blé tendre conventionnel,7200,3800,Agreste Statistique Agricole Annuelle 2023
+BLE/BIO,BLE tendre,AGB-002,Blé tendre bio,7200,3800,Agreste Statistique Agricole Annuelle 2023
+ORH,Orge d'hiver,AGB-005,Orge conventionnel,6500,3500,Agreste Statistique Agricole Annuelle 2023
+ORH/BIO,Orge d'hiver,AGB-006,Orge bio,6500,3500,Agreste Statistique Agricole Annuelle 2023
+ORP,Orge de printemps,AGB-005,Orge conventionnel,5800,3200,Agreste Statistique Agricole Annuelle 2023
+ORP/BIO,Orge de printemps,AGB-006,Orge bio,5800,3200,Agreste Statistique Agricole Annuelle 2023
+MAI,Maïs grain,AGB-003,Maïs grain conventionnel,9500,5500,Agreste Statistique Agricole Annuelle 2023
+MAI/BIO,Maïs grain,AGB-004,Maïs grain bio,9500,5500,Agreste Statistique Agricole Annuelle 2023
+COL,Colza d'hiver,AGB-007,Colza conventionnel,3500,2000,Agreste Statistique Agricole Annuelle 2023
+COL/BIO,Colza d'hiver,AGB-008,Colza bio,3500,2000,Agreste Statistique Agricole Annuelle 2023
+TOU,Tournesol,AGB-009,Tournesol conventionnel,2500,1600,Agreste Statistique Agricole Annuelle 2023
+TOU/BIO,Tournesol,AGB-010,Tournesol bio,2500,1600,Agreste Statistique Agricole Annuelle 2023
+POI,Pois protéagineux,AGB-011,Pois protéagineux conventionnel,4000,2800,Agreste Statistique Agricole Annuelle 2023
+POI/BIO,Pois protéagineux,AGB-012,Pois bio,4000,2800,Agreste Statistique Agricole Annuelle 2023
+PDT,Pomme de terre de consommation,AGB-013,Pomme de terre conventionnelle,42000,28000,Agreste Statistique Agricole Annuelle 2023
+PDT/BIO,Pomme de terre de consommation,AGB-014,Pomme de terre bio,42000,28000,Agreste Statistique Agricole Annuelle 2023
+BET,Betterave sucrière,AGB-015,Betterave sucrière conventionnelle,85000,55000,Agreste Statistique Agricole Annuelle 2023
+BET/BIO,Betterave sucrière,AGB-016,Betterave sucrière bio,85000,55000,Agreste Statistique Agricole Annuelle 2023
+MIS,Maïs ensilage,AGB-017,Maïs ensilage conventionnel,45000,32000,Agreste Statistique Agricole Annuelle 2023
+PPH,Prairie permanente,AGB-018,Prairie permanente,6000,5000,Agreste Statistique Agricole Annuelle 2023
+PRT,Prairie temporaire,AGB-019,Prairie temporaire,7500,5500,Agreste Statistique Agricole Annuelle 2023
+VRC,Vigne raisins de cuve,AGB-020,Raisin cuve conventionnel,8000,4500,Agreste Statistique Agricole Annuelle 2023
+VRC/BIO,Vigne raisins de cuve,AGB-021,Raisin cuve bio,8000,4500,Agreste Statistique Agricole Annuelle 2023
+POM,Pommes de table,AGB-022,Pomme conventionnelle,32000,22000,Agreste Statistique Agricole Annuelle 2023
+POM/BIO,Pommes de table,AGB-023,Pomme bio,32000,22000,Agreste Statistique Agricole Annuelle 2023
+BOV,Vache laitière,AGB-024,Lait vache conventionnel,6000,4800,FranceAgriMer / IDELE 2023
+BOV/BIO,Vache laitière,AGB-025,Lait vache bio,6000,4800,FranceAgriMer / IDELE 2023
+BOV_V,Vache allaitante,AGB-026,Viande bovine conventionnelle,320,260,IDELE Réseau INOSYS 2023
+BOV_V/BIO,Vache allaitante,AGB-027,Viande bovine bio,320,260,IDELE Réseau INOSYS 2023
+VOL,Volailles de chair,AGB-030,Volaille conventionnelle,1800,1200,ITAVI 2023
+VOL/BIO,Volailles de chair,AGB-030,Volaille conventionnelle,1800,1200,ITAVI 2023
+OEU,Poules pondeuses,AGB-028,Œufs conventionnels,8200,6500,ITAVI 2023
+OEU/BIO,Poules pondeuses,AGB-029,Œufs bio,8200,6500,ITAVI 2023
+SOJ,Soja,AGB-011,Pois protéagineux conventionnel,3000,2200,Agreste Statistique Agricole Annuelle 2023
+SOJ/BIO,Soja,AGB-012,Pois bio,3000,2200,Agreste Statistique Agricole Annuelle 2023
+FEV,Féverole,AGB-011,Pois protéagineux conventionnel,3800,2700,Agreste Statistique Agricole Annuelle 2023
+FEV/BIO,Féverole,AGB-012,Pois bio,3800,2700,Agreste Statistique Agricole Annuelle 2023
+SAR,Sarrasin,AGB-001,Blé tendre conventionnel,1500,1100,Agreste Statistique Agricole Annuelle 2023
+SAR/BIO,Sarrasin,AGB-002,Blé tendre bio,1500,1100,Agreste Statistique Agricole Annuelle 2023

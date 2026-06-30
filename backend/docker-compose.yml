@@ -1,0 +1,37 @@
+version: "3.9"
+
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: fieldscore
+      POSTGRES_PASSWORD: fieldscore
+      POSTGRES_DB: fieldscore
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U fieldscore"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  api:
+    build: .
+    ports:
+      - "8000:8000"
+    environment:
+      DATABASE_URL: "postgresql+asyncpg://fieldscore:fieldscore@db:5432/fieldscore"
+      DATABASE_URL_SYNC: "postgresql+psycopg2://fieldscore:fieldscore@db:5432/fieldscore"
+      DEBUG: "true"
+      ENVIRONMENT: "development"
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - ./data:/app/data
+    restart: unless-stopped
+
+volumes:
+  pgdata:
