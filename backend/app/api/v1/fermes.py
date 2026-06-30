@@ -60,8 +60,27 @@ async def list_fermes(
     result = await db.execute(query)
     fermes = result.scalars().all()
 
+    # Count parcelles per farm
+    from app.models.parcelle import Parcelle
+    parcelle_counts = {}
+    if fermes:
+        ferme_ids = [f.id for f in fermes]
+        count_q = (
+            select(Parcelle.ferme_id, func.count(Parcelle.id))
+            .where(Parcelle.ferme_id.in_(ferme_ids))
+            .group_by(Parcelle.ferme_id)
+        )
+        count_result = await db.execute(count_q)
+        parcelle_counts = {row[0]: row[1] for row in count_result.fetchall()}
+
+    items = []
+    for f in fermes:
+        out = FermeOut.model_validate(f)
+        out.nb_parcelles = parcelle_counts.get(f.id, 0)
+        items.append(out)
+
     return FermeList(
-        items=[FermeOut.model_validate(f) for f in fermes],
+        items=items,
         total=total,
         page=page,
         page_size=page_size,

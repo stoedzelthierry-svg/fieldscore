@@ -40,6 +40,7 @@ class FermeUpdate(BaseModel):
 class FermeOut(FermeBase):
     """Schema for farm output (response)."""
     id: uuid.UUID
+    nb_parcelles: int = Field(default=0, description="Nombre de parcelles")
     created_at: Optional[datetime] = None
     updated_at: Optional[datetime] = None
 
