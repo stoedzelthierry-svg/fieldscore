@@ -29,6 +29,10 @@ export type TypeIAE =
   | "fosse"
   | "prairie_permanente"
   | "verger_haute_tige"
+  | "agroforesterie"
+  | "jachere"
+  | "muret"
+  | "arbre_isole"
   | "autre";
 
 // --- Les 16 indicateurs PEF ---
@@ -251,6 +255,38 @@ export interface CalculResume {
   nb_parcelles_traitees: number;
 }
 
+// --- Nouveau type : impact détaillé (POST /api/v1/fermes/{id}/calcul) ---
+
+export interface ImpactDetaille {
+  trigramme: string;
+  valeur: number;
+  unite: string;
+  poids: number;
+  contribution_score: number; // contribution en mPt
+}
+
+export interface ContributionCulture {
+  code_culture: string;
+  culture_nom: string;
+  surface_ha: number;
+  rendement_kg_ha: number | null;
+  est_bio: boolean;
+  impacts: ImpactDetaille[];
+  contribution_score: number; // contribution en mPt
+}
+
+export interface CalculResultatV1 {
+  score_unique: number;
+  categorie: CategorieScore;
+  impacts_detailles: ImpactDetaille[];
+  contributions_cultures: ContributionCulture[];
+  details_json: {
+    modulation_iae: Record<string, number> | null;
+  };
+  surface_totale_ha: number;
+  nb_parcelles: number;
+}
+
 export interface IndicateurResultat {
   trigramme: string;
   valeur: number;
@@ -452,6 +488,10 @@ export const TYPE_IAE_LABELS: Record<TypeIAE, string> = {
   fosse: "Fossé",
   prairie_permanente: "Prairie permanente",
   verger_haute_tige: "Verger haute tige",
+  agroforesterie: "Agroforesterie",
+  jachere: "Jachère",
+  muret: "Muret",
+  arbre_isole: "Arbre isolé",
   autre: "Autre IAE",
 };
 

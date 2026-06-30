@@ -14,9 +14,10 @@ import Button from "@/components/ui/Button";
 import Badge from "@/components/ui/Badge";
 import Spinner from "@/components/ui/Spinner";
 import Alert from "@/components/ui/Alert";
-import { getCalculDetail, exportCalcul } from "@/lib/api";
+import { getCalculDetail, getFerme, exportCalcul } from "@/lib/api";
 import { formatDate, formatNumber, downloadBlob } from "@/lib/utils";
-import type { CalculDetail, ParcelleResultat } from "@/lib/api-types";
+import { exportCalculPdf, type FermeInfo } from "@/lib/pdf-export";
+import type { CalculDetail, FermeDetail, ParcelleResultat } from "@/lib/api-types";
 
 export default function CalculResultatPage() {
   const params = useParams();
@@ -24,6 +25,7 @@ export default function CalculResultatPage() {
   const calculId = Number(params.calculId || 0);
 
   const [calcul, setCalcul] = useState<CalculDetail | null>(null);
+  const [ferme, setFerme] = useState<FermeDetail | null>(null);
   const [loading, setLoading] = useState(true);
   const [exporting, setExporting] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -32,8 +34,12 @@ export default function CalculResultatPage() {
     try {
       setLoading(true);
       setError(null);
-      const result = await getCalculDetail(fermeId, calculId);
-      setCalcul(result);
+      const [calcResult, fermeResult] = await Promise.all([
+        getCalculDetail(fermeId, calculId),
+        getFerme(fermeId),
+      ]);
+      setCalcul(calcResult);
+      setFerme(fermeResult);
     } catch (err: unknown) {
       const message =
         err instanceof Error ? err.message : "Erreur de chargement";
@@ -58,6 +64,27 @@ export default function CalculResultatPage() {
     } catch (err: unknown) {
       const message =
         err instanceof Error ? err.message : "Erreur d'export";
+      setError(message);
+    } finally {
+      setExporting(false);
+    }
+  };
+
+  const handlePdfExport = () => {
+    if (!calcul || !ferme) return;
+    try {
+      setExporting(true);
+      const fermeInfo: FermeInfo = {
+        nom: ferme.nom,
+        commune: undefined,
+        code_insee: ferme.code_insee,
+        type_production: ferme.categorie,
+        surface_ha: ferme.surface_ha,
+      };
+      exportCalculPdf(calcul, fermeInfo);
+    } catch (err: unknown) {
+      const message =
+        err instanceof Error ? err.message : "Erreur export PDF";
       setError(message);
     } finally {
       setExporting(false);
@@ -142,12 +169,20 @@ export default function CalculResultatPage() {
             </div>
             <div className="flex flex-wrap gap-2 mt-4 justify-center lg:justify-start">
               <Button
+                variant="primary"
+                size="sm"
+                onClick={handlePdfExport}
+                loading={exporting}
+              >
+                📄 Exporter PDF
+              </Button>
+              <Button
                 variant="outline"
                 size="sm"
                 onClick={() => handleExport("json")}
                 loading={exporting}
               >
-                📥 Exporter JSON
+                📥 JSON
               </Button>
               <Button
                 variant="outline"
@@ -155,7 +190,7 @@ export default function CalculResultatPage() {
                 onClick={() => handleExport("csv")}
                 loading={exporting}
               >
-                📊 Exporter CSV
+                📊 CSV
               </Button>
               <Link href={`/fermes/${fermeId}`}>
                 <Button variant="ghost" size="sm">

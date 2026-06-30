@@ -8,6 +8,7 @@ import type {
   FermeCreate,
   CalculResume,
   CalculDetail,
+  CalculResultatV1,
   PaginatedResponse,
   ApiError,
 } from "./api-types";
@@ -116,6 +117,13 @@ export async function deleteFerme(id: number): Promise<void> {
 export async function lancerCalcul(fermeId: number): Promise<CalculDetail> {
   return request(`/api/fermes/${fermeId}/calculs`, {
     method: "POST",
+  });
+}
+
+export async function getCalculV1(fermeId: number): Promise<CalculResultatV1> {
+  return request(`/api/v1/fermes/${fermeId}/calcul`, {
+    method: "POST",
+    body: JSON.stringify({ inclure_iae: true }),
   });
 }
 

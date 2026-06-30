@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { FermeProvider } from "@/components/ferme/FermeContext";
 import Header from "@/components/layout/Header";
+import MobileNav from "@/components/layout/MobileNav";
 import Footer from "@/components/layout/Footer";
 
 export const metadata: Metadata = {
@@ -42,7 +43,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="fr">
-      <body className="font-body min-h-screen flex flex-col bg-[#F9FAFB] text-[#374151]">
+      <body className="font-body min-h-screen flex flex-col bg-[#F9FAFB] text-[#374151] pb-16 lg:pb-0">
         <FermeProvider>
           <Header />
           {/* Sidebar spacer */}
@@ -50,6 +51,7 @@ export default function RootLayout({
             <main>{children}</main>
             <Footer />
           </div>
+          <MobileNav />
         </FermeProvider>
       </body>
     </html>

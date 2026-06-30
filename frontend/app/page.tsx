@@ -1,15 +1,53 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import Card, { CardTitle } from "@/components/ui/Card";
 import Button from "@/components/ui/Button";
 import { useFerme } from "@/components/ferme/FermeContext";
 
+// Sector averages (mPt/ha) — hardcoded for now
+const SECTOR_AVERAGES: Record<string, { label: string; value: number }> = {
+  GRANDES_CULTURES: { label: "Grandes cultures", value: 750 },
+  MIXTE: { label: "Mixte", value: 450 },
+  VITICULTURE: { label: "Viticulture", value: 550 },
+  MARAICHAGE: { label: "Maraîchage", value: 400 },
+  ARBORICULTURE: { label: "Arboriculture", value: 350 },
+  ELEVAGE_BOVIN: { label: "Élevage bovin", value: 900 },
+  ELEVAGE_OVIN_CAPRIN: { label: "Élevage ovin/caprin", value: 820 },
+  ELEVAGE_PORCIN: { label: "Élevage porcin", value: 1200 },
+  ELEVAGE_AVICOLE: { label: "Élevage avicole", value: 950 },
+  POLYCULTURE_ELEVAGE: { label: "Polyculture-élevage", value: 700 },
+  AUTRE: { label: "Autre", value: 600 },
+};
+
+function getSectorComparison(fermeScore: number, fermeType?: string): { label: string; avg: number; above: boolean } | null {
+  const key = fermeType?.toUpperCase() || null;
+  const sector = key ? SECTOR_AVERAGES[key] : null;
+  if (!sector || fermeScore === 0) return null;
+  return {
+    label: sector.label,
+    avg: sector.value,
+    above: fermeScore < sector.value, // lower score = better
+  };
+}
+
+// Score color mapping with light gradient variants
+const catGradients: Record<string, string> = {
+  A: "bg-gradient-to-br from-emerald-50 to-white",
+  B: "bg-gradient-to-br from-green-50 to-white",
+  C: "bg-gradient-to-br from-amber-50 to-white",
+  D: "bg-gradient-to-br from-orange-50 to-white",
+  E: "bg-gradient-to-br from-red-50 to-white",
+  "?": "bg-gradient-to-br from-gray-50 to-white",
+};
+
 export default function HomePage() {
   const { fermeSelectionnee } = useFerme();
   const [calcul, setCalcul] = useState<any>(null);
   const [loadingCalcul, setLoadingCalcul] = useState(false);
+  const scoreRef = useRef<HTMLDivElement>(null);
+  const [animKey, setAnimKey] = useState(0);
 
   useEffect(() => {
     if (fermeSelectionnee) {
@@ -21,7 +59,6 @@ export default function HomePage() {
       })
         .then((r) => r.json())
         .then((data) => {
-          // Map backend response to frontend display format
           const cat = data.categorie || '?';
           const catLabels: Record<string, string> = { A: 'Excellent', B: 'Très bon', C: 'Bon', D: 'Moyen', E: 'À améliorer' };
           const catColors: Record<string, string> = { A: '#2E7D32', B: '#66BB6A', C: '#FFC107', D: '#FF9800', E: '#F44336' };
@@ -35,11 +72,17 @@ export default function HomePage() {
             empreinte_carbone_kgco2e: data.impacts_json?.cch?.valeur || 0,
             impact_total_mpt: data.score_unique || 0,
           });
+          // Trigger animation by remounting score element
+          setAnimKey((k) => k + 1);
         })
         .catch((e) => console.error("Erreur calcul:", e))
         .finally(() => setLoadingCalcul(false));
     }
   }, [fermeSelectionnee]);
+
+  const sectorComp = calcul?.score
+    ? getSectorComparison(calcul.impact_total_mpt, fermeSelectionnee?.type_production)
+    : null;
 
   return (
     <>
@@ -98,20 +141,74 @@ export default function HomePage() {
                   <div className="h-10 bg-gray-200 rounded w-24 mx-auto" />
                 </div>
               ) : calcul?.score ? (
-                <div className="bg-white rounded-2xl p-6 shadow-lg border border-primary-100">
-                  <p className="text-sm font-semibold text-gray-500 uppercase mb-3 font-body">Score environnemental</p>
+                <div
+                  key={animKey}
+                  className={`rounded-2xl p-6 shadow-lg border ${catGradients[calcul.score.categorie] || catGradients["?"]}`}
+                  style={{ borderColor: calcul.score.couleur ? `${calcul.score.couleur}30` : undefined }}
+                >
+                  <p className="text-sm font-semibold text-gray-500 uppercase mb-3 font-body">
+                    Score environnemental
+                  </p>
+                  {/* Catégorie letter with pulse animation */}
                   <div className="flex items-center justify-center gap-4">
-                    <div className="text-5xl font-extrabold font-heading" style={{ color: calcul.score.couleur || "#059669" }}>
+                    <div
+                      className="text-5xl font-extrabold font-heading animate-score-pulse"
+                      style={{ color: calcul.score.couleur || "#059669" }}
+                    >
                       {calcul.score.categorie}
                     </div>
                     <div className="text-left">
-                      <div className="text-2xl font-bold text-gray-900 font-heading">{calcul.score.note?.toLocaleString()}</div>
+                      <div
+                        ref={scoreRef}
+                        className="text-2xl font-bold text-gray-900 font-heading animate-count-up"
+                      >
+                        {calcul.score.note?.toLocaleString()}
+                      </div>
                       <div className="text-xs text-gray-500 font-body">mPt/ha</div>
                     </div>
                   </div>
                   <p className="text-sm font-semibold text-gray-700 mt-3 font-body">{calcul.score.label}</p>
                   <p className="text-xs text-gray-500 mt-1 font-body">{fermeSelectionnee.nom}</p>
-                  <div className="mt-4 pt-4 border-t border-gray-100 grid grid-cols-2 gap-4 text-center text-xs text-gray-500">
+                  {/* Sector comparison */}
+                  {sectorComp && (
+                    <div className="mt-3 pt-3 border-t border-gray-200/70 animate-fade-in-up">
+                      <div className="flex items-center justify-between text-xs">
+                        <span className="text-gray-500 font-body">
+                          Moyenne {sectorComp.label}
+                        </span>
+                        <span className="text-gray-400 font-mono">{sectorComp.avg.toLocaleString()} mPt/ha</span>
+                      </div>
+                      <div className="mt-1.5 flex items-center gap-2">
+                        {sectorComp.above ? (
+                          <>
+                            <span className="inline-flex items-center gap-1 text-xs font-semibold text-eco-700 bg-eco-100 px-2 py-0.5 rounded-full font-body">
+                              <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                <path d="M5 15l7-7 7 7"/>
+                              </svg>
+                              Au-dessus de la moyenne
+                            </span>
+                            <span className="text-xs text-eco-600 font-body">
+                              {((1 - calcul.impact_total_mpt / sectorComp.avg) * 100).toFixed(0)} % meilleur
+                            </span>
+                          </>
+                        ) : (
+                          <>
+                            <span className="inline-flex items-center gap-1 text-xs font-semibold text-warn-700 bg-warn-100 px-2 py-0.5 rounded-full font-body">
+                              <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                <path d="M19 9l-7 7-7-7"/>
+                              </svg>
+                              Sous la moyenne
+                            </span>
+                            <span className="text-xs text-warn-600 font-body">
+                              {((calcul.impact_total_mpt / sectorComp.avg - 1) * 100).toFixed(0)} % au-dessus
+                            </span>
+                          </>
+                        )}
+                      </div>
+                    </div>
+                  )}
+                  {/* Stats row */}
+                  <div className="mt-4 pt-4 border-t border-gray-200/70 grid grid-cols-2 gap-4 text-center text-xs text-gray-500">
                     <div>
                       <div className="font-bold text-gray-900">{calcul.empreinte_carbone_kgco2e?.toLocaleString() || "—"}</div>
                       <div>kg CO₂e/ha</div>

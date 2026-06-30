@@ -20,7 +20,7 @@ router = APIRouter(prefix="/fermes/{ferme_id}/exports", tags=["Exports"])
 
 
 @router.get(
-    "/json",
+    "/exports/json",
     summary="Export farm data as JSON",
     description="Retourne un JSON complet de la ferme : infos, parcelles, IAE, derniers calculs.",
 )
@@ -29,19 +29,16 @@ async def export_json(
     db: AsyncSession = Depends(get_db),
 ) -> dict:
     """Export complete farm data as JSON."""
-    # Farm
     farm_result = await db.execute(select(Ferme).where(Ferme.id == str(ferme_id)))
     ferme = farm_result.scalar_one_or_none()
     if ferme is None:
         raise HTTPException(status_code=404, detail="Ferme introuvable")
 
-    # Parcelles
     parc_result = await db.execute(
         select(Parcelle).where(Parcelle.ferme_id == str(ferme_id))
     )
     parcelles = parc_result.scalars().all()
 
-    # IAEs
     iae_result = await db.execute(
         select(InfrastructureEcologique).where(
             InfrastructureEcologique.ferme_id == str(ferme_id)
@@ -49,7 +46,6 @@ async def export_json(
     )
     iaes = iae_result.scalars().all()
 
-    # Last calculation
     calc_result = await db.execute(
         select(ResultatCalcul)
         .where(ResultatCalcul.ferme_id == str(ferme_id))
@@ -105,7 +101,7 @@ async def export_json(
 
 
 @router.get(
-    "/csv",
+    "/exports/csv",
     summary="Export calculation as CSV",
     description="Télécharge le dernier calcul au format CSV.",
 )
@@ -114,7 +110,6 @@ async def export_csv(
     db: AsyncSession = Depends(get_db),
 ) -> StreamingResponse:
     """Export latest calculation result as CSV."""
-    # Get latest calculation
     calc_result = await db.execute(
         select(ResultatCalcul)
         .where(ResultatCalcul.ferme_id == str(ferme_id))
@@ -128,10 +123,8 @@ async def export_csv(
     output = io.StringIO()
     writer = csv.writer(output)
 
-    # Header
     writer.writerow(["Indicateur", "Nom", "Valeur", "Unité", "Poids", "Contribution mPt"])
 
-    # Impacts
     impacts = calcul.impacts_json or {}
     for indicator, data in impacts.items():
         writer.writerow([
@@ -143,7 +136,6 @@ async def export_csv(
             data.get("contribution_score", ""),
         ])
 
-    # Summary
     writer.writerow([])
     writer.writerow(["Score unique mPt", calcul.score_unique])
     writer.writerow(["Catégorie", calcul.categorie])
@@ -161,18 +153,71 @@ async def export_csv(
     )
 
 
+def _build_calcul_pdf_data(ferme: Ferme, calcul: ResultatCalcul) -> dict:
+    """Build structured data for PDF export from stored calculation."""
+    impacts = []
+    impacts_json = calcul.impacts_json or {}
+    for code, data in impacts_json.items():
+        impacts.append({
+            "indicateur": code,
+            "nom": data.get("nom", code),
+            "valeur": data.get("valeur", 0),
+            "unite": data.get("unite", ""),
+            "poids": data.get("poids", 0),
+            "contribution_score": data.get("contribution_score", 0),
+        })
+
+    cultures = []
+    details = calcul.details_json or {}
+    for cc in details.get("contributions_cultures", []):
+        cultures.append({
+            "code_culture": cc.get("code_culture", ""),
+            "culture_nom": cc.get("culture_nom", cc.get("code_culture", "")),
+            "surface_ha": cc.get("surface_ha", 0),
+            "rendement_kg_ha": cc.get("rendement_kg_ha"),
+            "contribution_score": cc.get("contribution_score", 0),
+        })
+
+    modulation_iae = details.get("modulation_iae")
+    meta = calcul.metadonnees_json or {}
+
+    return {
+        "type": "pdf_report",
+        "generated_at": datetime.utcnow().isoformat(),
+        "ferme": {
+            "id": str(ferme.id),
+            "nom": ferme.nom,
+            "code_insee": ferme.code_insee,
+            "type_production": ferme.type_production,
+            "surface_totale_ha": ferme.surface_totale_ha,
+        },
+        "calcul": {
+            "id": str(calcul.id),
+            "timestamp": calcul.timestamp.isoformat() if calcul.timestamp else None,
+            "score_unique": calcul.score_unique,
+            "categorie": calcul.categorie,
+            "methode_version": calcul.methode_version,
+            "source_donnees": calcul.source_donnees,
+            "niveau_confiance": calcul.niveau_confiance,
+            "impacts": impacts,
+            "contributions_cultures": cultures,
+            "modulation_iae": modulation_iae,
+            "surface_totale_ha": meta.get("surface_totale_ha", 0),
+            "nb_parcelles": meta.get("nb_parcelles", 0),
+        },
+    }
+
+
 @router.get(
-    "/pdf",
-    summary="Export as PDF (summary)",
-    description="Retourne un résumé PDF simple (JSON pour le MVP, PDF natif en v2).",
+    "/exports/pdf",
+    summary="Export latest calculation as PDF data",
+    description="Retourne les données structurées du dernier calcul pour génération PDF.",
 )
 async def export_pdf(
     ferme_id: uuid.UUID,
     db: AsyncSession = Depends(get_db),
 ) -> dict:
-    """Export summary as simple PDF-compatible data (full PDF in v2)."""
-    # For MVP, return structured data that can be rendered to PDF client-side
-    # Full reportlab PDF will be added in v2
+    """Export latest calculation data for PDF generation."""
     farm_result = await db.execute(select(Ferme).where(Ferme.id == str(ferme_id)))
     ferme = farm_result.scalar_one_or_none()
     if ferme is None:
@@ -185,20 +230,7 @@ async def export_pdf(
         .limit(1)
     )
     calcul = calc_result.scalar_one_or_none()
+    if calcul is None:
+        raise HTTPException(status_code=404, detail="Aucun calcul trouvé pour cette ferme")
 
-    return {
-        "type": "pdf_summary",
-        "generated_at": datetime.utcnow().isoformat(),
-        "ferme": {
-            "nom": ferme.nom,
-            "type_production": ferme.type_production,
-            "surface_ha": ferme.surface_totale_ha,
-        },
-        "dernier_calcul": {
-            "score_unique": calcul.score_unique if calcul else None,
-            "categorie": calcul.categorie if calcul else None,
-            "date": calcul.timestamp.isoformat() if calcul and calcul.timestamp else None,
-        },
-        "message": "Export PDF complet disponible en v2 (reportlab). "
-                   "Utilisez le endpoint /json pour les données structurées complètes.",
-    }
+    return _build_calcul_pdf_data(ferme, calcul)

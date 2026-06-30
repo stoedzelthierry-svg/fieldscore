@@ -92,6 +92,9 @@ const config: Config = {
         "slide-up": "slideUp 0.3s ease-out",
         "gauge-fill": "gaugeFill 1s ease-out forwards",
         "pulse-slow": "pulse 3s infinite",
+        "count-up": "countUp 0.8s ease-out",
+        "score-pulse": "scorePulse 0.6s ease-out",
+        "fade-in-up": "fadeInUp 0.5s ease-out",
       },
       keyframes: {
         fadeIn: {
@@ -105,6 +108,21 @@ const config: Config = {
         gaugeFill: {
           "0%": { strokeDashoffset: "283" },
           "100%": { strokeDashoffset: "var(--gauge-offset)" },
+        },
+        countUp: {
+          "0%": { opacity: "0", transform: "translateY(12px) scale(0.9)" },
+          "60%": { opacity: "1", transform: "translateY(-2px) scale(1.03)" },
+          "100%": { opacity: "1", transform: "translateY(0) scale(1)" },
+        },
+        scorePulse: {
+          "0%": { transform: "scale(1)" },
+          "40%": { transform: "scale(1.12)" },
+          "70%": { transform: "scale(0.97)" },
+          "100%": { transform: "scale(1)" },
+        },
+        fadeInUp: {
+          "0%": { opacity: "0", transform: "translateY(10px)" },
+          "100%": { opacity: "1", transform: "translateY(0)" },
         },
       },
     },

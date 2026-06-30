@@ -300,3 +300,84 @@ async def preview_calculation(
         niveau_confiance=result["niveau_confiance"],
         avertissements=result.get("avertissements", []),
     )
+
+@router.get(
+    "/calculs/{calcul_id}/export/pdf",
+    summary="Export calculation as PDF data",
+    description="Retourne les données du calcul pour génération PDF coté client (jsPDF).",
+)
+async def export_calcul_pdf(
+    ferme_id: uuid.UUID,
+    calcul_id: uuid.UUID,
+    db: AsyncSession = Depends(get_db),
+) -> dict:
+    """Export a specific calculation's structured data for client-side PDF generation."""
+    from datetime import datetime
+
+    farm_result = await db.execute(select(Ferme).where(Ferme.id == str(ferme_id)))
+    ferme = farm_result.scalar_one_or_none()
+    if ferme is None:
+        raise HTTPException(status_code=404, detail=f"Ferme {ferme_id} introuvable")
+
+    calc_result = await db.execute(
+        select(ResultatCalcul).where(
+            ResultatCalcul.id == str(calcul_id),
+            ResultatCalcul.ferme_id == str(ferme_id),
+        )
+    )
+    calcul = calc_result.scalar_one_or_none()
+    if calcul is None:
+        raise HTTPException(status_code=404, detail="Calcul introuvable")
+
+    # Build structured data
+    impacts = []
+    impacts_json = calcul.impacts_json or {}
+    for code, data in impacts_json.items():
+        impacts.append({
+            "indicateur": code,
+            "nom": data.get("nom", code),
+            "valeur": data.get("valeur", 0),
+            "unite": data.get("unite", ""),
+            "poids": data.get("poids", 0),
+            "contribution_score": data.get("contribution_score", 0),
+        })
+
+    cultures = []
+    details = calcul.details_json or {}
+    for cc in details.get("contributions_cultures", []):
+        cultures.append({
+            "code_culture": cc.get("code_culture", ""),
+            "culture_nom": cc.get("culture_nom", cc.get("code_culture", "")),
+            "surface_ha": cc.get("surface_ha", 0),
+            "rendement_kg_ha": cc.get("rendement_kg_ha"),
+            "contribution_score": cc.get("contribution_score", 0),
+        })
+
+    modulation_iae = details.get("modulation_iae")
+    meta = calcul.metadonnees_json or {}
+
+    return {
+        "type": "pdf_report",
+        "generated_at": datetime.utcnow().isoformat(),
+        "ferme": {
+            "id": str(ferme.id),
+            "nom": ferme.nom,
+            "code_insee": ferme.code_insee,
+            "type_production": ferme.type_production,
+            "surface_totale_ha": ferme.surface_totale_ha,
+        },
+        "calcul": {
+            "id": str(calcul.id),
+            "timestamp": calcul.timestamp.isoformat() if calcul.timestamp else None,
+            "score_unique": calcul.score_unique,
+            "categorie": calcul.categorie,
+            "methode_version": calcul.methode_version,
+            "source_donnees": calcul.source_donnees,
+            "niveau_confiance": calcul.niveau_confiance,
+            "impacts": impacts,
+            "contributions_cultures": cultures,
+            "modulation_iae": modulation_iae,
+            "surface_totale_ha": meta.get("surface_totale_ha", 0),
+            "nb_parcelles": meta.get("nb_parcelles", 0),
+        },
+    }
