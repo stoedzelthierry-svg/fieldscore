@@ -138,7 +138,7 @@ async def launch_calculation(
 
     # Persist result
     calcul = ResultatCalcul(
-        ferme_id=ferme_id,
+        ferme_id=str(ferme_id),
         methode_version=result["methode_version"],
         score_unique=result["score_unique"],
         categorie=result["categorie"],

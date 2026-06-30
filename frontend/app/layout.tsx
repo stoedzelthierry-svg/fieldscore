@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import { FermeProvider } from "@/components/ferme/FermeContext";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 
@@ -41,13 +42,15 @@ export default function RootLayout({
 }) {
   return (
     <html lang="fr">
-      <body className="min-h-screen flex flex-col bg-[#F9FAFB]">
-        <Header />
-        {/* Sidebar spacer */}
-        <div className="flex-1 lg:pl-64">
-          <main>{children}</main>
-          <Footer />
-        </div>
+      <body className="font-body min-h-screen flex flex-col bg-[#F9FAFB] text-[#374151]">
+        <FermeProvider>
+          <Header />
+          {/* Sidebar spacer */}
+          <div className="flex-1 lg:pl-64">
+            <main>{children}</main>
+            <Footer />
+          </div>
+        </FermeProvider>
       </body>
     </html>
   );

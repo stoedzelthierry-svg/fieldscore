@@ -8,11 +8,13 @@ export default function Footer() {
           {/* Brand */}
           <div className="md:col-span-1">
             <div className="flex items-center gap-2 mb-4">
-              <img
-                src="/ecocert-logo.svg"
-                alt="EcoCert"
-                className="h-8 w-auto brightness-0 invert opacity-80"
-              />
+              <div className="bg-white rounded-lg p-2 inline-block">
+                <img
+                  src="/ecocert-logo.jpg"
+                  alt="Groupe Ecocert"
+                  className="h-8 w-auto"
+                />
+              </div>
             </div>
             <p className="text-sm leading-relaxed font-body">
               Calculateur de coût environnemental des fermes développé par

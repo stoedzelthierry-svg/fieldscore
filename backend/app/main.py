@@ -13,6 +13,8 @@ from typing import AsyncGenerator
 
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
+
+from app.database import engine, Base
 from fastapi.responses import JSONResponse
 
 from app.config import get_settings
@@ -45,6 +47,11 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
         - Close HTTP clients (Ecobalyse, RPG)
     """
     logger.info("Starting EcoCert FieldScore API v%s ...", settings.APP_VERSION)
+
+    # Create tables if they don't exist
+    async with engine.begin() as conn:
+        await conn.run_sync(Base.metadata.create_all)
+    logger.info("Database tables ready")
 
     # Pre-load data providers
     try:

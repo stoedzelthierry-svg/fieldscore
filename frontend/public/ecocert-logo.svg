@@ -1,8 +1,31 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 50" fill="none">
-  <path d="M20 35 Q10 20 25 10 Q35 5 40 15 L50 40" stroke="#DC3B41" stroke-width="3" fill="none"/>
-  <path d="M30 32 L45 10" stroke="#DC3B41" stroke-width="2.5" fill="none"/>
-  <circle cx="25" cy="12" r="3" fill="#DC3B41"/>
-  <text x="55" y="35" font-family="Montserrat, sans-serif" font-weight="800" font-size="22" fill="#1F2937">
-    ECO<tspan fill="#DC3B41">CERT</tspan>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 80" fill="none">
+  <!-- Oiseau Ecocert — silhouette réaliste en vol -->
+  <g transform="translate(180, 8) scale(0.6)">
+    <!-- Aile supérieure -->
+    <path d="M40 10 C50 2 70 -5 90 0 C95 1 98 5 95 10 C92 14 85 12 80 8 C70 2 55 2 45 6 Z" fill="#DC3B41"/>
+    <!-- Aile supérieure étendue -->
+    <path d="M90 0 C100 -2 115 -2 125 2 C130 4 128 8 122 9 C115 10 105 7 95 10" fill="#DC3B41"/>
+    <!-- Pointe d'aile -->
+    <path d="M50 6 C40 3 25 -2 15 -4 C10 -5 5 -3 3 2 C2 6 5 10 12 12 C20 14 35 12 45 10" fill="#DC3B41"/>
+    <!-- Corps principal -->
+    <path d="M40 10 C45 12 55 14 65 18 C75 22 85 28 90 35 C95 42 98 50 100 58 C102 64 103 68 100 72 C97 75 92 76 88 75 C82 74 76 70 70 65 C64 60 58 52 52 44 C46 36 42 26 40 18 Z" fill="#DC3B41"/>
+    <!-- Aile inférieure -->
+    <path d="M52 44 C45 50 40 58 38 65 C37 70 38 73 42 74 C46 75 52 72 58 68 C64 63 68 56 70 48 C72 41 70 35 65 30" fill="#DC3B41" opacity="0.9"/>
+    <!-- Queue -->
+    <path d="M100 65 C108 70 118 75 128 80 C133 82 140 84 145 83 C148 82 148 78 144 75 C138 71 130 67 122 63" fill="#DC3B41"/>
+    <!-- Bec -->
+    <path d="M40 10 C30 8 20 7 12 8 C10 8 8 10 10 12 C12 14 20 14 30 14 Z" fill="#DC3B41"/>
+    <!-- Œil -->
+    <circle cx="42" cy="14" r="1.5" fill="white"/>
+  </g>
+
+  <!-- Texte GROUPE -->
+  <text x="5" y="62" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-weight="700" font-size="18" fill="#1F2937" letter-spacing="3">
+    GROUPE
+  </text>
+
+  <!-- Texte ECOCERT -->
+  <text x="5" y="78" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-weight="900" font-size="28" fill="#1F2937" letter-spacing="1">
+    ECOCERT
   </text>
 </svg>

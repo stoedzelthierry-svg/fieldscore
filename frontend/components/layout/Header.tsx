@@ -1,9 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
+import FermeSelector from "../ferme/FermeSelector";
 
 interface NavLink {
   href: string;
@@ -59,16 +59,19 @@ export default function Header() {
       {/* === Desktop Sidebar === */}
       <aside className="sidebar flex flex-col">
         {/* Logo */}
-        <div className="px-5 py-6 border-b border-gray-200">
+        <div className="px-5 py-5 border-b border-gray-200">
           <Link href="/" className="flex items-center gap-3">
             <img
-              src="/ecocert-logo.svg"
-              alt="EcoCert"
+              src="/ecocert-logo.jpg"
+              alt="Groupe Ecocert"
               className="h-10 w-auto"
               style={{ height: "40px" }}
             />
           </Link>
         </div>
+
+        {/* Sélecteur de ferme */}
+        <FermeSelector />
 
         {/* Nav */}
         <nav className="flex-1 px-3 py-4 space-y-1 overflow-y-auto" aria-label="Navigation principale">
@@ -111,8 +114,8 @@ export default function Header() {
         <div className="flex items-center justify-between h-16 px-4">
           <Link href="/" className="flex items-center gap-2">
             <img
-              src="/ecocert-logo.svg"
-              alt="EcoCert"
+              src="/ecocert-logo.jpg"
+              alt="Groupe Ecocert"
               className="h-9 w-auto"
               style={{ height: "36px" }}
             />
