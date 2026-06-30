@@ -99,7 +99,7 @@ async def get_ferme(
 ) -> FermeOut:
     """Get a farm by its ID."""
     result = await db.execute(
-        select(Ferme).where(Ferme.id == ferme_id)
+        select(Ferme).where(Ferme.id == str(ferme_id))
     )
     ferme = result.scalar_one_or_none()
     if ferme is None:
@@ -123,7 +123,7 @@ async def update_ferme(
 ) -> FermeOut:
     """Update an existing farm."""
     result = await db.execute(
-        select(Ferme).where(Ferme.id == ferme_id)
+        select(Ferme).where(Ferme.id == str(ferme_id))
     )
     ferme = result.scalar_one_or_none()
     if ferme is None:
@@ -153,7 +153,7 @@ async def delete_ferme(
 ) -> None:
     """Delete a farm and all its associated data."""
     result = await db.execute(
-        select(Ferme).where(Ferme.id == ferme_id)
+        select(Ferme).where(Ferme.id == str(ferme_id))
     )
     ferme = result.scalar_one_or_none()
     if ferme is None:

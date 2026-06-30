@@ -31,11 +31,11 @@ async def list_parcelles(
 ) -> ParcelleList:
     """List all parcelles for a given farm."""
     # Verify farm exists
-    farm_result = await db.execute(select(Ferme).where(Ferme.id == ferme_id))
+    farm_result = await db.execute(select(Ferme).where(Ferme.id == str(ferme_id)))
     if farm_result.scalar_one_or_none() is None:
         raise HTTPException(status_code=404, detail=f"Ferme {ferme_id} introuvable")
 
-    query = select(Parcelle).where(Parcelle.ferme_id == ferme_id)
+    query = select(Parcelle).where(Parcelle.ferme_id == str(ferme_id))
 
     # Count
     count_query = select(func.count()).select_from(query.subquery())
@@ -71,12 +71,12 @@ async def create_parcelle(
 ) -> ParcelleOut:
     """Create a new parcelle for a farm."""
     # Verify farm exists
-    farm_result = await db.execute(select(Ferme).where(Ferme.id == ferme_id))
+    farm_result = await db.execute(select(Ferme).where(Ferme.id == str(ferme_id)))
     if farm_result.scalar_one_or_none() is None:
         raise HTTPException(status_code=404, detail=f"Ferme {ferme_id} introuvable")
 
     parcelle_data = body.model_dump()
-    parcelle_data["ferme_id"] = ferme_id
+    parcelle_data["ferme_id"] = str(ferme_id)
     parcelle = Parcelle(**parcelle_data)
     db.add(parcelle)
     await db.flush()
@@ -98,8 +98,8 @@ async def get_parcelle(
     """Get a specific parcelle."""
     result = await db.execute(
         select(Parcelle).where(
-            Parcelle.id == parcelle_id,
-            Parcelle.ferme_id == ferme_id,
+            Parcelle.id == str(parcelle_id),
+            Parcelle.ferme_id == str(ferme_id),
         )
     )
     parcelle = result.scalar_one_or_none()
@@ -123,8 +123,8 @@ async def update_parcelle(
     """Update a parcelle."""
     result = await db.execute(
         select(Parcelle).where(
-            Parcelle.id == parcelle_id,
-            Parcelle.ferme_id == ferme_id,
+            Parcelle.id == str(parcelle_id),
+            Parcelle.ferme_id == str(ferme_id),
         )
     )
     parcelle = result.scalar_one_or_none()
@@ -154,8 +154,8 @@ async def delete_parcelle(
     """Delete a parcelle."""
     result = await db.execute(
         select(Parcelle).where(
-            Parcelle.id == parcelle_id,
-            Parcelle.ferme_id == ferme_id,
+            Parcelle.id == str(parcelle_id),
+            Parcelle.ferme_id == str(ferme_id),
         )
     )
     parcelle = result.scalar_one_or_none()

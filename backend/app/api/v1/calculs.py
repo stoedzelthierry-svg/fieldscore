@@ -42,7 +42,7 @@ async def launch_calculation(
 ) -> CalculOutput:
     """Run a full environmental score calculation for a farm and persist result."""
     # Verify farm exists
-    farm_result = await db.execute(select(Ferme).where(Ferme.id == ferme_id))
+    farm_result = await db.execute(select(Ferme).where(Ferme.id == str(ferme_id)))
     ferme = farm_result.scalar_one_or_none()
     if ferme is None:
         raise HTTPException(status_code=404, detail=f"Ferme {ferme_id} introuvable")
@@ -63,7 +63,7 @@ async def launch_calculation(
     else:
         # Use stored parcelles
         parcelles_result = await db.execute(
-            select(Parcelle).where(Parcelle.ferme_id == ferme_id)
+            select(Parcelle).where(Parcelle.ferme_id == str(ferme_id))
         )
         parcelles_db = parcelles_result.scalars().all()
         if not parcelles_db:
@@ -88,7 +88,7 @@ async def launch_calculation(
     if body.inclure_iae:
         iae_result = await db.execute(
             select(InfrastructureEcologique).where(
-                InfrastructureEcologique.ferme_id == ferme_id
+                InfrastructureEcologique.ferme_id == str(ferme_id)
             )
         )
         iae_db = iae_result.scalars().all()
@@ -170,12 +170,12 @@ async def list_calculations(
 ) -> CalculList:
     """List calculation history for a farm."""
     # Verify farm exists
-    farm_result = await db.execute(select(Ferme).where(Ferme.id == ferme_id))
+    farm_result = await db.execute(select(Ferme).where(Ferme.id == str(ferme_id)))
     if farm_result.scalar_one_or_none() is None:
         raise HTTPException(status_code=404, detail=f"Ferme {ferme_id} introuvable")
 
     query = select(ResultatCalcul).where(
-        ResultatCalcul.ferme_id == ferme_id
+        ResultatCalcul.ferme_id == str(ferme_id)
     )
 
     # Count
@@ -212,8 +212,8 @@ async def get_calculation(
     """Get a specific calculation result."""
     result = await db.execute(
         select(ResultatCalcul).where(
-            ResultatCalcul.id == calcul_id,
-            ResultatCalcul.ferme_id == ferme_id,
+            ResultatCalcul.id == str(calcul_id),
+            ResultatCalcul.ferme_id == str(ferme_id),
         )
     )
     calcul = result.scalar_one_or_none()
@@ -239,7 +239,7 @@ async def preview_calculation(
 ) -> CalculPreviewOutput:
     """Run a preview calculation without persisting."""
     # Verify farm exists
-    farm_result = await db.execute(select(Ferme).where(Ferme.id == ferme_id))
+    farm_result = await db.execute(select(Ferme).where(Ferme.id == str(ferme_id)))
     ferme = farm_result.scalar_one_or_none()
     if ferme is None:
         raise HTTPException(status_code=404, detail=f"Ferme {ferme_id} introuvable")
@@ -266,7 +266,7 @@ async def preview_calculation(
     if body.inclure_iae:
         iae_result = await db.execute(
             select(InfrastructureEcologique).where(
-                InfrastructureEcologique.ferme_id == ferme_id
+                InfrastructureEcologique.ferme_id == str(ferme_id)
             )
         )
         iae_db = iae_result.scalars().all()

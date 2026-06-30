@@ -30,21 +30,21 @@ async def export_json(
 ) -> dict:
     """Export complete farm data as JSON."""
     # Farm
-    farm_result = await db.execute(select(Ferme).where(Ferme.id == ferme_id))
+    farm_result = await db.execute(select(Ferme).where(Ferme.id == str(ferme_id)))
     ferme = farm_result.scalar_one_or_none()
     if ferme is None:
         raise HTTPException(status_code=404, detail="Ferme introuvable")
 
     # Parcelles
     parc_result = await db.execute(
-        select(Parcelle).where(Parcelle.ferme_id == ferme_id)
+        select(Parcelle).where(Parcelle.ferme_id == str(ferme_id))
     )
     parcelles = parc_result.scalars().all()
 
     # IAEs
     iae_result = await db.execute(
         select(InfrastructureEcologique).where(
-            InfrastructureEcologique.ferme_id == ferme_id
+            InfrastructureEcologique.ferme_id == str(ferme_id)
         )
     )
     iaes = iae_result.scalars().all()
@@ -52,7 +52,7 @@ async def export_json(
     # Last calculation
     calc_result = await db.execute(
         select(ResultatCalcul)
-        .where(ResultatCalcul.ferme_id == ferme_id)
+        .where(ResultatCalcul.ferme_id == str(ferme_id))
         .order_by(ResultatCalcul.created_at.desc())
         .limit(5)
     )
@@ -117,7 +117,7 @@ async def export_csv(
     # Get latest calculation
     calc_result = await db.execute(
         select(ResultatCalcul)
-        .where(ResultatCalcul.ferme_id == ferme_id)
+        .where(ResultatCalcul.ferme_id == str(ferme_id))
         .order_by(ResultatCalcul.created_at.desc())
         .limit(1)
     )
@@ -173,14 +173,14 @@ async def export_pdf(
     """Export summary as simple PDF-compatible data (full PDF in v2)."""
     # For MVP, return structured data that can be rendered to PDF client-side
     # Full reportlab PDF will be added in v2
-    farm_result = await db.execute(select(Ferme).where(Ferme.id == ferme_id))
+    farm_result = await db.execute(select(Ferme).where(Ferme.id == str(ferme_id)))
     ferme = farm_result.scalar_one_or_none()
     if ferme is None:
         raise HTTPException(status_code=404, detail="Ferme introuvable")
 
     calc_result = await db.execute(
         select(ResultatCalcul)
-        .where(ResultatCalcul.ferme_id == ferme_id)
+        .where(ResultatCalcul.ferme_id == str(ferme_id))
         .order_by(ResultatCalcul.created_at.desc())
         .limit(1)
     )
