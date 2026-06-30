@@ -1,17 +1,11 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  output: 'standalone',
+  output: "standalone",
   images: {
     domains: [],
   },
-  async rewrites() {
-    return [
-      {
-        source: "/api/:path*",
-        destination: `${process.env.NEXT_PUBLIC_API_URL || "http://backend:8000"}/api/:path*`,
-      },
-    ];
-  },
+  // No rewrites needed in production - Nginx handles /api proxy
+  // For local dev, set NEXT_PUBLIC_API_URL=http://localhost:8000
 };
 
 module.exports = nextConfig;
