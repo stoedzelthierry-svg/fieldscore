@@ -2,7 +2,6 @@
 
 import uuid
 from sqlalchemy import Column, String, Float, DateTime, func
-from sqlalchemy.dialects.postgresql import UUID
 from app.database import Base
 
 
@@ -15,7 +14,7 @@ class MappingCulture(Base):
 
     __tablename__ = "mapping_cultures"
 
-    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    id = Column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
     code_culture_pac = Column(
         String(20), nullable=False, unique=True, index=True,
         comment="Code culture PAC (ex: BLE_TENDRE)"

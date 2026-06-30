@@ -2,7 +2,6 @@
 
 import uuid
 from sqlalchemy import Column, String, Float, Integer, DateTime, ForeignKey, Boolean, func
-from sqlalchemy.dialects.postgresql import UUID
 from app.database import Base
 
 
@@ -14,10 +13,9 @@ class Cheptel(Base):
 
     __tablename__ = "cheptels"
 
-    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    id = Column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
     ferme_id = Column(
-        UUID(as_uuid=True),
-        ForeignKey("fermes.id", ondelete="CASCADE"),
+        String(36), ForeignKey("fermes.id", ondelete="CASCADE"),
         nullable=False,
         index=True,
     )

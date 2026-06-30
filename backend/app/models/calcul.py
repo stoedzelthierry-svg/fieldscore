@@ -5,8 +5,7 @@ including per-indicator breakdown, confidence level, and metadata.
 """
 
 import uuid
-from sqlalchemy import Column, String, Float, Integer, DateTime, ForeignKey, func, Text
-from sqlalchemy.dialects.postgresql import UUID, JSONB
+from sqlalchemy import Column, String, Float, Integer, DateTime, ForeignKey, func, Text, JSON
 from app.database import Base
 
 
@@ -19,10 +18,9 @@ class ResultatCalcul(Base):
 
     __tablename__ = "resultats_calcul"
 
-    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    id = Column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
     ferme_id = Column(
-        UUID(as_uuid=True),
-        ForeignKey("fermes.id", ondelete="CASCADE"),
+        String(36), ForeignKey("fermes.id", ondelete="CASCADE"),
         nullable=False,
         index=True,
     )
@@ -47,15 +45,15 @@ class ResultatCalcul(Base):
 
     # Detailed breakdowns
     impacts_json = Column(
-        JSONB, nullable=False, default=dict,
+        JSON, nullable=False, default=dict,
         comment="Dict des 16 impacts PEF {indicator: value_mPt}"
     )
     details_json = Column(
-        JSONB, nullable=True,
+        JSON, nullable=True,
         comment="Détail par parcelle, contribution par culture"
     )
     metadonnees_json = Column(
-        JSONB, nullable=True, default=dict,
+        JSON, nullable=True, default=dict,
         comment="Métadonnées: nb_parcelles, surface_totale, source_donnees"
     )
 

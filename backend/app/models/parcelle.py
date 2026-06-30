@@ -2,7 +2,6 @@
 
 import uuid
 from sqlalchemy import Column, String, Float, Integer, Boolean, DateTime, ForeignKey, func
-from sqlalchemy.dialects.postgresql import UUID
 from app.database import Base
 
 
@@ -15,10 +14,9 @@ class Parcelle(Base):
 
     __tablename__ = "parcelles"
 
-    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    id = Column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
     ferme_id = Column(
-        UUID(as_uuid=True),
-        ForeignKey("fermes.id", ondelete="CASCADE"),
+        String(36), ForeignKey("fermes.id", ondelete="CASCADE"),
         nullable=False,
         index=True,
         comment="Référence à la ferme parente"

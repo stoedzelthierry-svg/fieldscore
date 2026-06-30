@@ -22,11 +22,13 @@ class Settings(BaseSettings):
     PORT: int = 8000
     CORS_ORIGINS: list[str] = ["*"]
 
-    # Database (PostgreSQL)
-    DATABASE_URL: str = "postgresql+asyncpg://fieldscore:fieldscore@localhost:5432/fieldscore"
-    DATABASE_URL_SYNC: str = "postgresql+psycopg2://fieldscore:fieldscore@localhost:5432/fieldscore"
+    # Database (auto-detect: PostgreSQL preferred, SQLite fallback)
+    # Set DATABASE_URL env to force PostgreSQL; defaults to SQLite for zero-config deploys
+    DATABASE_URL: str = "sqlite+aiosqlite:///./fieldscore.db"
+    DATABASE_URL_SYNC: str = "sqlite:///./fieldscore.db"
     DB_POOL_SIZE: int = 20
     DB_MAX_OVERFLOW: int = 10
+    DB_USE_POSTGRES: bool = False
 
     # Agribalyse
     AGRIBALYSE_CSV_PATH: str = "data/agribalyse/v3.2/synthese.csv"

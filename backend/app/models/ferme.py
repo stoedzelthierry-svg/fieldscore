@@ -2,7 +2,6 @@
 
 import uuid
 from sqlalchemy import Column, String, Float, Integer, DateTime, func
-from sqlalchemy.dialects.postgresql import UUID
 from app.database import Base
 
 
@@ -15,7 +14,7 @@ class Ferme(Base):
 
     __tablename__ = "fermes"
 
-    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    id = Column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
     siret = Column(String(14), nullable=True, index=True, comment="SIRET de l'exploitation")
     nom = Column(String(255), nullable=False, comment="Nom de la ferme")
     code_insee = Column(String(5), nullable=True, comment="Code INSEE de la commune")
