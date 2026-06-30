@@ -16,6 +16,13 @@ class ParcelleInput(BaseModel):
     culture_nom: Optional[str] = None
 
 
+class IAEInput(BaseModel):
+    """Infrastructure agro-écologique submitted for a calculation."""
+    type_iae: str = Field(..., min_length=1, max_length=50)
+    metrique: str = Field(default="ha")
+    valeur: float = Field(..., gt=0)
+
+
 class CalculRequest(BaseModel):
     """Request body to trigger a full calculation for a farm.
 
@@ -27,6 +34,12 @@ class CalculRequest(BaseModel):
         max_length=100,
         description="Parcelles optionnelles pour un calcul preview. "
                     "Si absent, utilise les parcelles enregistrées de la ferme."
+    )
+    infrastructures: Optional[list[IAEInput]] = Field(
+        None,
+        max_length=50,
+        description="IAE optionnelles pour un calcul preview. "
+                    "Si absent, utilise les IAE enregistrées de la ferme."
     )
     inclure_iae: bool = Field(
         default=True,

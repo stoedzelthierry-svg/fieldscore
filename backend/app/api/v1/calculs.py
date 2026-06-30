@@ -86,21 +86,33 @@ async def launch_calculation(
     # Get IAE entries if modulation requested
     iae_entries = None
     if body.inclure_iae:
-        iae_result = await db.execute(
-            select(InfrastructureEcologique).where(
-                InfrastructureEcologique.ferme_id == str(ferme_id)
-            )
-        )
-        iae_db = iae_result.scalars().all()
-        if iae_db:
+        if body.infrastructures:
+            # Use inline IAE for preview
             iae_entries = [
                 {
                     "type_iae": iae.type_iae,
                     "metrique": iae.metrique,
                     "valeur": iae.valeur,
                 }
-                for iae in iae_db
+                for iae in body.infrastructures
             ]
+        else:
+            # Use stored IAE
+            iae_result = await db.execute(
+                select(InfrastructureEcologique).where(
+                    InfrastructureEcologique.ferme_id == str(ferme_id)
+                )
+            )
+            iae_db = iae_result.scalars().all()
+            if iae_db:
+                iae_entries = [
+                    {
+                        "type_iae": iae.type_iae,
+                        "metrique": iae.metrique,
+                        "valeur": iae.valeur,
+                    }
+                    for iae in iae_db
+                ]
 
     # Run calculation
     calculator = await get_calculator()

@@ -275,7 +275,7 @@ export default function NouvelleFermeWizardPage() {
         siret: null as string | null,
       };
 
-      const ferme = (await apiRequest("/api/v1/fermes", {
+      const ferme = (await apiRequest("/fermes", {
         method: "POST",
         body: JSON.stringify(fermePayload),
       })) as { id: string };
@@ -284,7 +284,7 @@ export default function NouvelleFermeWizardPage() {
 
       // 2. Créer chaque parcelle
       const parcellePromises = parcelles.map((p) =>
-        apiRequest(`/api/v1/fermes/${fermeId}/parcelles`, {
+        apiRequest(`/fermes/${fermeId}/parcelles`, {
           method: "POST",
           body: JSON.stringify({
             code_culture: p.code_culture,
@@ -304,7 +304,7 @@ export default function NouvelleFermeWizardPage() {
           valeur: parseFloat(i.valeur) || 0,
         }));
 
-        await apiRequest(`/api/v1/fermes/${fermeId}/calcul`, {
+        await apiRequest(`/fermes/${fermeId}/calcul`, {
           method: "POST",
           body: JSON.stringify({
             inclure_iae: true,

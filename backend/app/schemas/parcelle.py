@@ -18,7 +18,7 @@ class ParcelleBase(BaseModel):
 
 class ParcelleCreate(ParcelleBase):
     """Schema for creating a new parcelle."""
-    ferme_id: uuid.UUID
+    ferme_id: Optional[uuid.UUID] = None
 
 
 class ParcelleUpdate(BaseModel):
