@@ -21,8 +21,8 @@ import type { CalculDetail, FermeDetail, ParcelleResultat } from "@/lib/api-type
 
 export default function CalculResultatPage() {
   const params = useParams();
-  const fermeId = Number(params.id);
-  const calculId = Number(params.calculId || 0);
+  const fermeId = params.id as string;
+  const calculId = params.calculId as string;
 
   const [calcul, setCalcul] = useState<CalculDetail | null>(null);
   const [ferme, setFerme] = useState<FermeDetail | null>(null);

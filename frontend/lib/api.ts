@@ -84,67 +84,67 @@ export async function getFermes(
 ): Promise<PaginatedResponse<Ferme>> {
   const params = new URLSearchParams({ page: String(page), size: String(size) });
   if (search) params.set("search", search);
-  return request(`/api/v1/fermes?${params}`);
+  return request(`/fermes?${params}`);
 }
 
-export async function getFerme(id: number): Promise<FermeDetail> {
-  return request(`/api/v1/fermes/${id}`);
+export async function getFerme(id: string): Promise<FermeDetail> {
+  return request(`/fermes/${id}`);
 }
 
 export async function createFerme(data: FermeCreate): Promise<FermeDetail> {
-  return request("/api/v1/fermes", {
+  return request("/fermes", {
     method: "POST",
     body: JSON.stringify(data),
   });
 }
 
 export async function updateFerme(
-  id: number,
+  id: string,
   data: Partial<FermeCreate>
 ): Promise<FermeDetail> {
-  return request(`/api/v1/fermes/${id}`, {
+  return request(`/fermes/${id}`, {
     method: "PATCH",
     body: JSON.stringify(data),
   });
 }
 
-export async function deleteFerme(id: number): Promise<void> {
-  return request(`/api/v1/fermes/${id}`, { method: "DELETE" });
+export async function deleteFerme(id: string): Promise<void> {
+  return request(`/fermes/${id}`, { method: "DELETE" });
 }
 
 // --- Calculs ---
 
-export async function lancerCalcul(fermeId: number): Promise<CalculDetail> {
-  return request(`/api/v1/fermes/${fermeId}/calculs`, {
+export async function lancerCalcul(fermeId: string): Promise<CalculDetail> {
+  return request(`/fermes/${fermeId}/calculs`, {
     method: "POST",
   });
 }
 
-export async function getCalculV1(fermeId: number): Promise<CalculResultatV1> {
-  return request(`/api/v1/fermes/${fermeId}/calcul`, {
+export async function getCalculV1(fermeId: string): Promise<CalculResultatV1> {
+  return request(`/fermes/${fermeId}/calcul`, {
     method: "POST",
     body: JSON.stringify({ inclure_iae: true }),
   });
 }
 
 export async function getCalculDetail(
-  fermeId: number,
-  calculId: number
+  fermeId: string,
+  calculId: string
 ): Promise<CalculDetail> {
-  return request(`/api/v1/fermes/${fermeId}/calculs/${calculId}`);
+  return request(`/fermes/${fermeId}/calculs/${calculId}`);
 }
 
 export async function getCalculsFerme(
-  fermeId: number
+  fermeId: string
 ): Promise<CalculResume[]> {
-  return request(`/api/v1/fermes/${fermeId}/calculs`);
+  return request(`/fermes/${fermeId}/calculs`);
 }
 
 // --- Export ---
 
 export async function exportCalcul(
-  fermeId: number,
-  calculId: number,
+  fermeId: string,
+  calculId: string,
   format: "json" | "csv" = "json"
 ): Promise<Blob> {
   const controller = new AbortController();

@@ -233,7 +233,7 @@ function CategorieLabel({
 // ============================================================
 export default function FermeDetailPage() {
   const params = useParams();
-  const id = Number(params.id);
+  const id = params.id as string;
 
   const [ferme, setFerme] = useState<FermeDetail | null>(null);
   const [calcul, setCalcul] = useState<CalculResultatV1 | null>(null);
