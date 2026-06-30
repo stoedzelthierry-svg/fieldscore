@@ -71,19 +71,6 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
 
     # Shutdown
     logger.info("Shutting down FieldScore API...")
-    try:
-        from app.core.ecobalyse_client import get_ecobalyse_client
-        ecobalyse = await get_ecobalyse_client()
-        await ecobalyse.close()
-    except Exception:
-        pass
-
-    try:
-        from app.services.rpg_service import get_rpg_service
-        rpg = await get_rpg_service()
-        await rpg.close()
-    except Exception:
-        pass
 
     logger.info("FieldScore API shutdown complete")
 
