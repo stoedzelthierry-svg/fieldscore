@@ -4,8 +4,7 @@ const nextConfig = {
   images: {
     domains: [],
   },
-  // No rewrites needed in production - Nginx handles /api proxy
-  // For local dev, set NEXT_PUBLIC_API_URL=http://localhost:8000
+  // API proxying handled by middleware.ts
 };
 
 module.exports = nextConfig;
