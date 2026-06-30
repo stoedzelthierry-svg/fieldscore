@@ -22,13 +22,15 @@ export default function HomePage() {
         .then((r) => r.json())
         .then((data) => {
           // Map backend response to frontend display format
-          const ci = data.metadonnees_json?.categorie_info || {};
+          const cat = data.categorie || '?';
+          const catLabels: Record<string, string> = { A: 'Excellent', B: 'Très bon', C: 'Bon', D: 'Moyen', E: 'À améliorer' };
+          const catColors: Record<string, string> = { A: '#2E7D32', B: '#66BB6A', C: '#FFC107', D: '#FF9800', E: '#F44336' };
           setCalcul({
             score: {
               note: Math.round(data.score_unique || 0),
-              label: ci.label || `Catégorie ${data.categorie || '?'}`,
-              couleur: ci.color || '#F44336',
-              categorie: data.categorie || '?',
+              label: catLabels[cat] || `Catégorie ${cat}`,
+              couleur: catColors[cat] || '#F44336',
+              categorie: cat,
             },
             empreinte_carbone_kgco2e: data.impacts_json?.cch?.valeur || 0,
             impact_total_mpt: data.score_unique || 0,
@@ -104,7 +106,7 @@ export default function HomePage() {
                     </div>
                     <div className="text-left">
                       <div className="text-2xl font-bold text-gray-900 font-heading">{calcul.score.note?.toLocaleString()}</div>
-                      <div className="text-xs text-gray-500 font-body">mPt</div>
+                      <div className="text-xs text-gray-500 font-body">mPt/ha</div>
                     </div>
                   </div>
                   <p className="text-sm font-semibold text-gray-700 mt-3 font-body">{calcul.score.label}</p>
@@ -112,11 +114,11 @@ export default function HomePage() {
                   <div className="mt-4 pt-4 border-t border-gray-100 grid grid-cols-2 gap-4 text-center text-xs text-gray-500">
                     <div>
                       <div className="font-bold text-gray-900">{calcul.empreinte_carbone_kgco2e?.toLocaleString() || "—"}</div>
-                      <div>kg CO₂e</div>
+                      <div>kg CO₂e/ha</div>
                     </div>
                     <div>
                       <div className="font-bold text-gray-900">{calcul.impact_total_mpt?.toLocaleString() || "—"}</div>
-                      <div>mPt</div>
+                      <div>mPt/ha</div>
                     </div>
                   </div>
                 </div>

@@ -317,17 +317,26 @@ class ImpactCalculator:
         # Normalize impacts to mPt
         normalized_scores = normalize_impacts(impacts_absolus)
 
-        # Compute single score
-        score_unique = compute_single_score(normalized_scores)
+        # Compute single score per hectare (Ecobalyse standard)
+        if surface_totale > 0:
+            normalized_per_ha = {
+                ind: val / surface_totale for ind, val in normalized_scores.items()
+            }
+            score_unique = compute_single_score(normalized_per_ha)
 
         # Categorize
         categorie = categorize_score(score_unique, type_production)
 
-        # Compute contribution per culture (normalized)
+        # Compute contribution per culture (normalized, per hectare)
         for contrib in contributions:
             parcelle_norm = normalize_impacts(contrib["impacts_absolus"])
-            contrib["contribution_score"] = compute_single_score(parcelle_norm)
-            # Add normalized impacts for display
+            surface_contrib = contrib.get("surface_ha", 1.0)
+            if surface_contrib > 0:
+                parcelle_norm_ha = {ind: val / surface_contrib for ind, val in parcelle_norm.items()}
+                contrib["contribution_score"] = compute_single_score(parcelle_norm_ha)
+            else:
+                contrib["contribution_score"] = compute_single_score(parcelle_norm)
+            # Add normalized impacts for display (per ha)
             contrib["impacts_normalises"] = parcelle_norm
 
         # Build detailed impacts list
