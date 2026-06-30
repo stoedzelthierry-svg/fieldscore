@@ -343,10 +343,10 @@ export interface ApiError {
 }
 
 export interface PaginatedResponse<T> {
-  data: T[];
+  items: T[];
   total: number;
   page: number;
-  size: number;
+  page_size: number;
   pages: number;
 }
 

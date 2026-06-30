@@ -66,7 +66,7 @@ export default function FermesPage() {
       setLoading(true);
       setError(null);
       const res = await getFermes(1, 100);
-      const data: FermeWithScore[] = (res.data || []).map((f) => ({
+      const data: FermeWithScore[] = (res.items || []).map((f) => ({
         ...f,
         scoreLoading: f.nb_parcelles > 0,
         scoreError: false,
