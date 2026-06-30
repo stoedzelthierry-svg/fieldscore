@@ -84,15 +84,15 @@ export async function getFermes(
 ): Promise<PaginatedResponse<Ferme>> {
   const params = new URLSearchParams({ page: String(page), size: String(size) });
   if (search) params.set("search", search);
-  return request(`/api/fermes?${params}`);
+  return request(`/api/v1/fermes?${params}`);
 }
 
 export async function getFerme(id: number): Promise<FermeDetail> {
-  return request(`/api/fermes/${id}`);
+  return request(`/api/v1/fermes/${id}`);
 }
 
 export async function createFerme(data: FermeCreate): Promise<FermeDetail> {
-  return request("/api/fermes", {
+  return request("/api/v1/fermes", {
     method: "POST",
     body: JSON.stringify(data),
   });
@@ -102,20 +102,20 @@ export async function updateFerme(
   id: number,
   data: Partial<FermeCreate>
 ): Promise<FermeDetail> {
-  return request(`/api/fermes/${id}`, {
+  return request(`/api/v1/fermes/${id}`, {
     method: "PATCH",
     body: JSON.stringify(data),
   });
 }
 
 export async function deleteFerme(id: number): Promise<void> {
-  return request(`/api/fermes/${id}`, { method: "DELETE" });
+  return request(`/api/v1/fermes/${id}`, { method: "DELETE" });
 }
 
 // --- Calculs ---
 
 export async function lancerCalcul(fermeId: number): Promise<CalculDetail> {
-  return request(`/api/fermes/${fermeId}/calculs`, {
+  return request(`/api/v1/fermes/${fermeId}/calculs`, {
     method: "POST",
   });
 }
@@ -131,13 +131,13 @@ export async function getCalculDetail(
   fermeId: number,
   calculId: number
 ): Promise<CalculDetail> {
-  return request(`/api/fermes/${fermeId}/calculs/${calculId}`);
+  return request(`/api/v1/fermes/${fermeId}/calculs/${calculId}`);
 }
 
 export async function getCalculsFerme(
   fermeId: number
 ): Promise<CalculResume[]> {
-  return request(`/api/fermes/${fermeId}/calculs`);
+  return request(`/api/v1/fermes/${fermeId}/calculs`);
 }
 
 // --- Export ---
@@ -152,7 +152,7 @@ export async function exportCalcul(
 
   try {
     const res = await fetch(
-      `${API_BASE}/api/fermes/${fermeId}/calculs/${calculId}/export?format=${format}`,
+      `${API_BASE}/api/v1/fermes/${fermeId}/calculs/${calculId}/export?format=${format}`,
       { signal: controller.signal }
     );
     clearTimeout(timeoutId);
